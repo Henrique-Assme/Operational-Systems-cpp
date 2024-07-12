@@ -17,7 +17,7 @@ int main(int argc, char * argv[])
 
     const char* filename = argv[1];
 
-    // Create a shared memory region
+    // Cria região de memória compartilhada	
     int* number = (int*) mmap(NULL, sizeof (int) , PROT_READ | PROT_WRITE,
                               MAP_SHARED | MAP_ANONYMOUS, -1, 0);
     if (number == MAP_FAILED) {
@@ -26,7 +26,7 @@ int main(int argc, char * argv[])
     }
     *number = -1; // Inicializa o valor da memória compartilhada
 
-    // a partir daqui temos 2 processos que rodam o mesmo programa
+    // A partir daqui temos 2 processos que rodam o mesmo programa
     int id;
     id = fork();
 
@@ -58,7 +58,6 @@ int main(int argc, char * argv[])
 
         std::cout << "Fork Pai: " << *number << std::endl;
 
-        // Unmap memory and exit parent process
         if (munmap(number, sizeof(int)) == -1) {
             perror("munmap");
             exit(EXIT_FAILURE);

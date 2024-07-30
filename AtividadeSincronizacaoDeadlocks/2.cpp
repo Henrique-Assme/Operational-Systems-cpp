@@ -10,14 +10,9 @@
 int iteracoes = 10000;
 
 int main(int argc, char **argv) {
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <num_threads>\n", argv[0]);
-        exit(EXIT_FAILURE);
-    }
-    
     int n = atoi(argv[1]);
     
-    // Create a shared memory region
+    // Memoria compartilhada
     int *acc = (int *) mmap(NULL, sizeof(int), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
     pthread_mutex_t *mutex = (pthread_mutex_t *) mmap(NULL, sizeof(pthread_mutex_t), PROT_READ | PROT_WRITE, MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
@@ -35,7 +30,8 @@ int main(int argc, char **argv) {
     pid_t pid;
     for (int i = 0; i < n; i++) {
         pid = fork();
-        if (pid == 0) { // Child process
+        // Processo Filho
+        if (pid == 0) { 
             int acc_local = 0;
             for (int j = 0; j < iteracoes; j++) {
                 acc_local++;
@@ -49,6 +45,7 @@ int main(int argc, char **argv) {
             munmap(mutex, sizeof(pthread_mutex_t));
             exit(0);
         } else if (pid < 0) {
+            // Processo Pai
             perror("fork");
             exit(EXIT_FAILURE);
         }
